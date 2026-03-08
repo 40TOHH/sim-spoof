@@ -27,13 +27,20 @@ busybox which iptables >/dev/null 2>&1 || { busybox echo "[×] iptables not foun
 busybox which ip6tables >/dev/null 2>&1 || { busybox echo "[×] ip6tables not found. Exiting."; exit 1; }
 busybox echo "[✓] Environment OK."
 
-MCCMNC="90188"
-MCC="901"
-MNC="88"
-OPERATOR="ReBullet Internet"
 busybox echo "Manual Input:"
+while true; do
+    busybox echo -n "Enter MCCMNC (5-6 digits, e.g., 90188): "
+    read MCCMNC
+    [[ "$MCCMNC" =~ ^[0-9]{5,6}$ ]] && break
+    busybox echo "[!] Invalid MCCMNC. Must be 5 or 6 digits."
+done
+MCC="${MCCMNC:0:3}"
+MNC="${MCCMNC:3}"
+busybox echo -n "Enter operator name (e.g., ReBullet Internet): "
+read OPERATOR
 busybox echo -n "Enter ISO (e.g., SC for Seychelles): "
 read ISO
+ISO=$(busybox echo "$ISO" | busybox tr '[:upper:]' '[:lower:]')
 busybox echo -n "Enter Timezone (e.g., Europe/Moscow): "
 read TZ
 [[ ! "$TZ" =~ "/" ]] && { busybox echo "[×] Invalid timezone format. Must contain a forward slash (e.g., Europe/Moscow)."; exit 1; }
